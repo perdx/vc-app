@@ -1,0 +1,58 @@
+{
+    "default": {
+        "locale": "en-US",
+        "card": {
+            "title": "AT Identity",
+            "issuedBy": "Auckland Transport",
+            "backgroundColor": "#2c384c",
+            "textColor": "#ffffff",
+            "logo": {
+                "uri": "https://stperdx.blob.core.windows.net/vc-container/AT-Logo.webp?sp=r&st=2021-12-01T02:55:43Z&se=2021-12-25T10:55:43Z&spr=https&sv=2020-08-04&sr=b&sig=DlbjIr1ndv8PN%2BIWDEzmlCRj9KMXs4Ef55b30lq3Q4M%3D",
+                "description": "Auckland Transport logo"
+            },
+            "description": "Use your verified credential to sign in to your AT Wallet."
+        },
+        "consent": {
+            "title": "Do you want to get your Verified Credential?",
+            "instructions": "Sign in with your account to get your card."
+        },
+        "claims": {
+            "vc.credentialSubject.givenName": {
+                "type": "String",
+                "label": "Given name"
+            },
+            "vc.credentialSubject.familyName": {
+                "type": "String",
+                "label": "Family name"
+            },
+            "vc.credentialSubject.birthDate": {
+                "type": "String",
+                "label": "Birth Date"
+            },
+            "vc.credentialSubject.sex": {
+                "type": "String",
+                "label": "Sex"
+            },
+            "vc.credentialSubject.email": {
+                "type": "String",
+                "label": "Email"
+            },
+            "vc.credentialSubject.mobile": {
+                "type": "String",
+                "label": "Mobile"
+            },
+            "vc.credentialSubject.city": {
+                "type": "String",
+                "label": "City"
+            },
+            "vc.credentialSubject.country": {
+                "type": "String",
+                "label": "Country"
+            },
+            "vc.credentialSubject.driversLicense": {
+                "type": "String",
+                "label": "Drivers License"
+            }
+        }
+    }
+}

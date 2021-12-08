@@ -1,0 +1,122 @@
+# Builds a docker image, publishes it to GitHub's docker repo (ghcr.io),
+# and subsequently deploys it as a Container App revision.
+#
+# The workflow will only run if commit message contains [tag:patch|minor|major]
+
+name: Deploy Update
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  IMAGE_REPO: ghcr.io/${{ github.repository }}
+  CA_GROUP: rg-atvc
+  CA_NAME: ca-atvc
+
+jobs:
+  # ----------------------------------------------------
+  # Build a docker image, tag, and publish
+  #  - only runs if [tag:patch|minor|major] is found
+  #    in commit message
+  # ----------------------------------------------------
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+
+    # only run if commit message contains versioning setting
+    if: |
+      contains(github.event.head_commit.message, '[tag:patch]')
+      || contains(github.event.head_commit.message, '[tag:minor]')
+      || contains(github.event.head_commit.message, '[tag:major]')
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      # generate new version number — increment based on [tag:xxx] setting
+      - name: Generate version
+        id: version
+        uses: paulhatch/semantic-version@v4.0.2
+        with:
+          major_pattern: "[tag:major]"
+          minor_pattern: "[tag:minor]"
+          short_tags: false
+
+      # tag the repo using the new version
+      - name: Tag repo
+        uses: actions/github-script@v5
+        with:
+          script: |
+            github.rest.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: "refs/tags/${{ steps.version.outputs.version_tag }}",
+              sha: context.sha
+            })
+
+      # log in to docker repo (Github container registry)
+      - name: Log in to GitHub container registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # generate docker image tag using the new version
+      - name: Generate image tag
+        id: tag
+        run: |
+          echo "::set-output name=image-tag::${{ env.IMAGE_REPO }}:${{ steps.version.outputs.version_tag }}"
+
+      # build and publish docker image
+      - name: Build and push image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.tag.outputs.image-tag }}, ${{ env.IMAGE_REPO }}:latest
+
+      - name: Create release
+        uses: actions/github-script@v5
+        with:
+          script: |
+            github.rest.repos.createRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tag_name: "${{ steps.version.outputs.version_tag }}"
+            })
+
+    outputs:
+      image-tag: ${{ steps.tag.outputs.image-tag }}
+
+  # ----------------------------------------------------
+  # Deploy this build
+  # ----------------------------------------------------
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          
+      - name: Deploy to ContainerApp
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+            echo "Installing ContainerApp extension"
+            az extension add --source https://workerappscliextension.blob.core.windows.net/azure-cli-extension/containerapp-0.2.0-py2.py3-none-any.whl --yes
+            echo "Deploying..."
+            az containerapp update \
+              --resource-group ${{ env.CA_GROUP }} \
+              --name ${{ env.CA_NAME }} \
+              --image ${{ needs.build.outputs.image-tag }}

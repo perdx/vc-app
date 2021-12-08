@@ -1,0 +1,47 @@
+{
+    "attestations": {
+        "idTokens": [
+            {
+                "id": "https://self-issued.me",
+                "mapping": {
+                    "givenName": {
+                        "claim": "$.given_name"
+                    },
+                    "familyName": {
+                        "claim": "$.family_name"
+                    },
+                    "birthDate": {
+                        "claim": "$.birth_date"
+                    },
+                    "sex": {
+                        "claim": "$.sex"
+                    },
+                    "email": {
+                        "claim": "$.email"
+                    },
+                    "mobile": {
+                        "claim": "$.mobile"
+                    },
+                    "city": {
+                        "claim": "$.city"
+                    },
+                    "country": {
+                        "claim": "$.country"
+                    },
+                    "driversLicense": {
+                        "claim": "$.drivers_license"
+                    }
+                },
+                "configuration": "https://self-issued.me",
+                "client_id": "",
+                "redirect_uri": ""
+            }
+        ]
+    },
+    "validityInterval": 2592001,
+    "vc": {
+        "type": [
+            "ATIdentity"
+        ]
+    }
+}
