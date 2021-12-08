@@ -1,6 +1,5 @@
 # Builds a docker image, publishes it to GitHub's docker repo (ghcr.io),
 # and subsequently deploys it as a Container App revision.
-#
 # The workflow will only run if commit message contains [tag:patch|minor|major]
 
 name: Deploy Update
