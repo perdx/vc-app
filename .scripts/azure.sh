@@ -10,10 +10,10 @@
 
 # env vars
 SUBSCRIPTION="<subscription>"
-RESOURCE_GROUP=rg-atvc
+RESOURCE_GROUP=rg-vc
 LOCATION=australiaeast
 VC_APP_ID=bbb94529-53a3-4be5-a069-7eaf2712b826
-ATVC_IMAGE=ghcr.io/perdx/vc-app:latest
+VC_IMAGE=ghcr.io/perdx/vc-app:latest
 
 # secrets and variables
 GHCR_USER="<github machine user>"
@@ -141,7 +141,7 @@ az provider register --namespace Microsoft.Web
 # Container App Environment
 # --------------------------------------------------
 
-LA_NAME=atvc-logs
+LA_NAME=vc-logs
 CA_LOCATION=canadacentral
 
 # logging
@@ -176,7 +176,7 @@ az containerapp create \
   --registry-login-server ghcr.io \
   --registry-username "$GHCR_USER" \
   --registry-password "$GHCR_PWD" \
-  --image $ATVC_IMAGE \
+  --image $VC_IMAGE \
   --cpu 0.5 --memory 1.0Gi \
   --max-replicas 5 \
   --ingress external \
