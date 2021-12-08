@@ -108,11 +108,11 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
           
-      - name: Deploy to ContainerApp
+      - name: Deploy to Container App
         uses: azure/CLI@v1
         with:
           inlineScript: |
-            echo "Installing ContainerApp extension"
+            echo "Installing Container App extension"
             az extension add --source https://workerappscliextension.blob.core.windows.net/azure-cli-extension/containerapp-0.2.0-py2.py3-none-any.whl --yes
             echo "Deploying..."
             az containerapp update \
