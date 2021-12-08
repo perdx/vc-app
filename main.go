@@ -8,7 +8,7 @@ import (
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/cors"
 
-	"github.com/perdx/at-vc-app/handler"
+	"github.com/perdx/vc-app/handler"
 )
 
 // func init() {

@@ -1,4 +1,4 @@
-module github.com/perdx/at-vc-app
+module github.com/perdx/vc-app
 
 go 1.17
 
