@@ -2,7 +2,6 @@
 # 1. Deployment service principal for Github Actions
 # 2. Container App
 
-
 # https://docs.microsoft.com/en-us/azure/active-directory/verifiable-credentials/verifiable-credentials-configure-tenant
 
 # --------------------------------------------------
@@ -10,20 +9,21 @@
 # --------------------------------------------------
 
 # env vars
+SUBSCRIPTION="<subscription>"
 RESOURCE_GROUP=rg-atvc
 LOCATION=australiaeast
 VC_APP_ID=bbb94529-53a3-4be5-a069-7eaf2712b826
-ATVC_IMAGE=ghcr.io/perdx/at-vc-app:latest
+ATVC_IMAGE=ghcr.io/perdx/vc-app:latest
 
 # secrets and variables
-GHCR_USER=andrewweston
-GHCR_PWD=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
+GHCR_USER="<github machine user>"
+GHCR_PWD="<github PAT>"
 
 # service names
-CA_ENV_NAME=cae-atvc
-CA_NAME=ca-atvc
+CA_ENV_NAME="<container app environment name>"
+CA_NAME="<container app name>"
 
-az account set --subscription "Innovation"
+az account set --subscription $SUBSCRIPTION
 
 # --------------------------------------------------
 # Resource Group(s)
@@ -41,7 +41,7 @@ az ad sp create --id $VC_APP_ID
 az ad sp create-for-rbac \
     --name "sp-deployment" \
     --role contributor \
-    --scopes /subscriptions/80016cfa-6231-4847-8a49-dd7c3f6776e5/resourceGroups/$RESOURCE_GROUP \
+    --scopes /subscriptions/$SUBSCRIPTION/resourceGroups/$RESOURCE_GROUP \
     --sdk-auth
 
 # N.B. save result for use in Github Actions
@@ -162,7 +162,7 @@ az containerapp env create \
 TENANT=9125264c-86cb-45fe-baa2-e022db0590d6
 AUTHORITY=did:ion:EiBuwQM4Yu-r3NV2qQsaeu2ziZ03D4TUTKRCAZjDVVteIg:eyJkZWx0YSI6eyJwYXRjaGVzIjpbeyJhY3Rpb24iOiJyZXBsYWNlIiwiZG9jdW1lbnQiOnsicHVibGljS2V5cyI6W3siaWQiOiJzaWdfM2ZlZjk4ZDQiLCJwdWJsaWNLZXlKd2siOnsiY3J2Ijoic2VjcDI1NmsxIiwia3R5IjoiRUMiLCJ4IjoiSjZDeEE5U2QzeUV4Z2hTTDJ6OUx0YzYzMXZxbEJfRFV6bEo4QlU3WWZORSIsInkiOiJwWmhYRG9LbVNNc2FlcnY4N3V3ME5zOWZLZkFEN1hLZmZQMjJreXBPVXZNIn0sInB1cnBvc2VzIjpbImF1dGhlbnRpY2F0aW9uIiwiYXNzZXJ0aW9uTWV0aG9kIl0sInR5cGUiOiJFY2RzYVNlY3AyNTZrMVZlcmlmaWNhdGlvbktleTIwMTkifV0sInNlcnZpY2VzIjpbeyJpZCI6ImxpbmtlZGRvbWFpbnMiLCJzZXJ2aWNlRW5kcG9pbnQiOnsib3JpZ2lucyI6WyJodHRwczovL3BlcmR4LmlvLyJdfSwidHlwZSI6IkxpbmtlZERvbWFpbnMifV19fV0sInVwZGF0ZUNvbW1pdG1lbnQiOiJFaUJJeTFTTXhzWjRwLS1uNkI1MVRXQjFDZWl4bDZqa3V6QVNUZmc2QWF4bFdBIn0sInN1ZmZpeERhdGEiOnsiZGVsdGFIYXNoIjoiRWlEcjlUbVlhSTEwamEtMFpzWkJ5ODJuWmcyT2F1MGpSbUFWSHE3Z09renBRQSIsInJlY292ZXJ5Q29tbWl0bWVudCI6IkVpQlJldTY5RXN0UVRLeDVCV1VfUzhyNDRoXzZpY20tVlEyWXZTNU54NkwtV3cifX0
 CLIENT_ID=$API_APP_ID
-CLIENT_SECRET=YgF7Q~HCXu1U3Z5dvSXzJC3N8NR46Tds8Rhsg
+CLIENT_SECRET="<API_APP_SECRET>"
 
 az containerapp create \
   --resource-group $RESOURCE_GROUP \
